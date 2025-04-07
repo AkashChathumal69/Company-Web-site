@@ -24,9 +24,34 @@ const Contactusform = () => {
     }
 
     // FORM SUBMIT
-    const handleSubmit = (event: { preventDefault: () => void; }) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         // handle form submission
+        const formData = new FormData(event.target as HTMLFormElement);
+
+        formData.append("access_key", "8c0fab52-0767-4d28-a3a0-be46f8be2375");
+
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
+
+        try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: json
+            });
+            const result = await response.json();
+            if (result.success) {
+                console.log(result);
+            } else {
+                console.error("Submission failed:", result);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
     };
 
     const isDisabled = Object.values(inputValues).some((value) => value === '');
@@ -95,7 +120,7 @@ const Contactusform = () => {
                                                 <input
                                                     id="text"
 
-                                                    name="input1"
+                                                    name="User Name"
                                                     value={inputValues.input1}
                                                     onChange={handleChange}
 
@@ -110,7 +135,7 @@ const Contactusform = () => {
                                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Your email</label>
                                                 <input
                                                     id="email"
-                                                    name="input2"
+                                                    name="Email"
                                                     value={inputValues.input2}
                                                     onChange={handleChange}
 
@@ -125,7 +150,7 @@ const Contactusform = () => {
                                                 <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Your message</label>
                                                 <textarea
                                                     id="message"
-                                                    name="input3"
+                                                    name="Message"
                                                     value={inputValues.input3}
                                                     onChange={handleChange}
                                                     className="relative block w-full appearance-none  rounded-md border border-linegrey px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" placeholder="Leave a comment..."></textarea>
